@@ -18,14 +18,23 @@ package com.example.jetnews.ui.home
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,17 +45,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
@@ -171,29 +185,74 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
         }
     }
     if (openDialog) {
-        AlertDialog(
-            modifier = Modifier.padding(20.dp),
-            onDismissRequest = { openDialog = false },
-            title = {
-                Text(
-                    text = stringResource(id = R.string.fewer_stories),
-                    style = MaterialTheme.typography.titleLarge
+        Dialog(
+            onDismissRequest = {
+                openDialog = false
+            },
+            properties = DialogProperties().let {
+                DialogProperties(
+                    dismissOnBackPress = it.dismissOnBackPress,
+                    dismissOnClickOutside = it.dismissOnClickOutside,
+                    securePolicy = it.securePolicy,
+                    usePlatformDefaultWidth = false
                 )
             },
-            text = {
-                Text(
-                    text = stringResource(id = R.string.fewer_stories_content),
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            },
-            confirmButton = {
-                Text(
-                    text = stringResource(id = R.string.agree),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier
-                        .padding(15.dp)
-                        .clickable { openDialog = false }
+            content = {
+                Surface(
+                    color = Color.Transparent,
+                    modifier = Modifier.fillMaxWidth(), // Customize your width here
+                    content = {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(475.dp)
+                                .padding(20.dp),
+                            shape = RoundedCornerShape(16.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                            ){
+                                Text(
+                                    text = stringResource(id = R.string.fewer_stories),
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                                Spacer(modifier = Modifier.padding(vertical = 18.dp))
+                                Text(
+                                    text = stringResource(id = R.string.fewer_stories_content),
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                                Spacer(modifier = Modifier.padding(vertical = 24.dp))
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 18.dp),
+                                    horizontalArrangement = Arrangement.SpaceEvenly,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "Cancel",
+                                        style = MaterialTheme.typography.labelLarge,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier
+                                            .padding(15.dp)
+                                            .clickable { openDialog = false }
+                                    )
+                                    Text(
+                                        text = stringResource(id = R.string.agree),
+                                        style = MaterialTheme.typography.labelLarge,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier
+                                            .padding(15.dp)
+                                            .clickable { openDialog = false }
+                                    )
+                                }
+                            }
+                        }
+                    }
                 )
             }
         )
